@@ -5,7 +5,7 @@
         <field name="name">ow.mcp.oauth.client.list</field>
         <field name="model">ow.mcp.oauth.client</field>
         <field name="arch" type="xml">
-            <list string="OAuth Clients">
+            <tree string="OAuth Clients">
                 <field name="client_id"/>
                 <field name="client_name"/>
                 <field name="token_endpoint_auth_method"/>
@@ -13,7 +13,7 @@
                 <field name="is_dynamic"/>
                 <field name="last_used_at"/>
                 <field name="active" widget="boolean_toggle"/>
-            </list>
+            </tree>
         </field>
     </record>
 
@@ -54,7 +54,7 @@
     <record id="action_oauth_client" model="ir.actions.act_window">
         <field name="name">OAuth Clients</field>
         <field name="res_model">ow.mcp.oauth.client</field>
-        <field name="view_mode">list,form</field>
+        <field name="view_mode">tree,form</field>
     </record>
 
 </odoo>
