@@ -105,9 +105,10 @@ class MCPController(http.Controller):
                 error_code=jsonrpc.PERMISSION_DENIED,
                 error_message='user not allowed to use MCP',
             )
-        request.update_env(user=uid)
+        request.uid = uid
+        request.env = request.env(user=uid)
         if _no_cache_requested(request):
-            request.update_env(
+            request.env = request.env(
                 context=dict(request.env.context, ow_mcp_no_cache=True),
             )
 
