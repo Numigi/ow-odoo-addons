@@ -3,6 +3,8 @@
 GET  /ow_mcp/oauth/authorize  — render consent screen (auth='user')
 POST /ow_mcp/oauth/authorize  — submit consent decision (auth='user', CSRF on)
 """
+from __future__ import annotations
+
 import logging
 import re
 from datetime import datetime, timedelta

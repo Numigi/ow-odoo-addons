@@ -14,6 +14,8 @@ Request body (JSON):
 Response: 201 with the registered client. `client_secret` is returned in
 plaintext exactly once (and only when token_endpoint_auth_method != "none").
 """
+from __future__ import annotations
+
 import json
 import logging
 import time
