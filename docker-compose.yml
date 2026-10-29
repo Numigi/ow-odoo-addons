@@ -1,23 +1,28 @@
-version: '3'
+version: '2'
 services:
   db:
     image: postgres:13
+    platform: linux/amd64
     environment:
       - POSTGRES_PASSWORD=odoo
       - POSTGRES_USER=odoo
       - POSTGRES_DB=postgres
     restart: unless-stopped
     volumes:
-      - odoo-db-data:/var/lib/postgresql/data
+      - ./postgresql:/var/lib/postgresql/data
     ports:
       - "5432:5432"
 
   odoo:
     image: odoo:14
+    platform: linux/amd64
     depends_on:
       - db
     ports:
       - "8069:8069"
+      - "8072:8072"
+    tty: true
+    command: --log-level=info --no-xmlrpc
     environment:
       - HOST=db
       - USER=odoo
@@ -26,8 +31,6 @@ services:
       - .:/mnt/extra-addons
       - odoo-data:/var/lib/odoo
     restart: unless-stopped
-    command: --dev=all --log-level=debug
 
 volumes:
-  odoo-db-data:
   odoo-data:
