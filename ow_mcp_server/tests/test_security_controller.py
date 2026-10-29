@@ -36,7 +36,7 @@ class TestMcpSecurityController(HttpCase):
         })
         self.key = (
             self.env['res.users.apikeys'].with_user(self.user)
-            ._generate('mcp', 'sec', datetime.now() + timedelta(days=1))
+            ._generate('mcp', 'sec')
         )
         partner = self.env.ref('base.model_res_partner').id
         self.env['ow.mcp.model.access'].sudo().search(

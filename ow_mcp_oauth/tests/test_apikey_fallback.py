@@ -22,7 +22,7 @@ class TestApiKeyFallback(HttpCase):
         })
         self.key = (
             self.env['res.users.apikeys'].with_user(self.user)
-            ._generate('mcp', 'legacy', datetime.now() + timedelta(days=1))
+            ._generate('mcp', 'legacy')
         )
 
     def test_apikey_still_works(self):

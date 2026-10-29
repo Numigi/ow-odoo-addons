@@ -69,7 +69,7 @@ class TestHardeningController(HttpCase):
         })
         self.key = (
             self.env['res.users.apikeys'].with_user(self.user)
-            ._generate('mcp', 'hard', datetime.now() + timedelta(days=1))
+            ._generate('mcp', 'hard')
         )
         self.env.flush_all()
 

@@ -21,10 +21,9 @@ class TestMcpController(HttpCase):
                 (4, self.env.ref('base.group_user').id),
             ],
         })
-        self.expires = datetime.now() + timedelta(days=1)
         self.key = (
             self.env['res.users.apikeys'].with_user(self.user)
-            ._generate('mcp', 'test', self.expires)
+            ._generate('mcp', 'test')
         )
         partner = self.env.ref('base.model_res_partner').id
         self.env['ow.mcp.model.access'].sudo().search(
@@ -66,7 +65,7 @@ class TestMcpController(HttpCase):
     def test_wrong_scope_rejected(self):
         other = (
             self.env['res.users.apikeys'].with_user(self.user)
-            ._generate('rpc', 'other', self.expires)
+            ._generate('rpc', 'other')
         )
         r = self._post(
             {'jsonrpc': '2.0', 'id': 1, 'method': 'initialize'},

@@ -37,7 +37,7 @@ class TestCorsOrigins(HttpCase):
         })
         self.key = (
             self.env['res.users.apikeys'].with_user(self.user)
-            ._generate('mcp', 'cors', datetime.now() + timedelta(days=1))
+            ._generate('mcp', 'cors')
         )
         self.env.flush_all()
 
