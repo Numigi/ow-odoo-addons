@@ -106,11 +106,11 @@ class MCPController(http.Controller):
                 error_message='user not allowed to use MCP',
             )
         request.uid = uid
-        request.env = request.env(user=uid)
+        request._env = None  # Invalidate cached env - it will be recreated with new uid
         if _no_cache_requested(request):
-            request.env = request.env(
-                context=dict(request.env.context, ow_mcp_no_cache=True),
-            )
+            # Set context with no-cache flag
+            request._context = dict(request.env.context, ow_mcp_no_cache=True)
+            request._env = None  # Invalidate again to pick up new context
 
         if cfg and cfg.rate_limit_per_minute and not ratelimit.check_and_record(
             uid, cfg.rate_limit_per_minute,
