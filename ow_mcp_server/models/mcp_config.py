@@ -160,9 +160,8 @@ class MCPConfig(models.Model):
     # so two concurrent callers cannot both pass the count check.
     _SINGLETON_LOCK_KEY = 0x4F57_4D43  # 'OWMC'
 
-    @api.ondelete(at_uninstall=False)
-    def _forbid_unlink(self):
-        """Block deletion of the singleton row at ORM level.
+    def unlink(self):
+        """Block deletion of the singleton row at ORM level (Odoo 14 compat).
 
         The form view already hides the Delete button, but this guard covers
         XML-RPC, `odoo shell`, and any code path that reaches `unlink()`

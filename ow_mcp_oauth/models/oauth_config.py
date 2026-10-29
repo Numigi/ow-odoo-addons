@@ -238,8 +238,11 @@ class OauthConfig(models.Model):
         u.dcr_prune(env)
         return True
 
-    @api.ondelete(at_uninstall=False)
-    def _forbid_unlink(self):
+    def unlink(self):
+        """Block deletion of the singleton row at ORM level (Odoo 14 compat)."""
+        # Allow deletion during module uninstall
+        if self.env.context.get('_force_unlink') or not self.env.context.get('active_test', True):
+            return super().unlink()
         raise UserError(
             'ow.mcp.oauth.config is a singleton and cannot be deleted. '
             'Edit the existing record or uninstall the module to remove it.'

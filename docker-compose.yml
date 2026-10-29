@@ -22,13 +22,14 @@ services:
       - "8069:8069"
       - "8072:8072"
     tty: true
-    command: --log-level=info --no-xmlrpc
+    command: --log-level=info
     environment:
       - HOST=db
       - USER=odoo
       - PASSWORD=odoo
     volumes:
       - .:/mnt/extra-addons
+      - ./odoo.conf:/etc/odoo/odoo.conf
       - odoo-data:/var/lib/odoo
     restart: unless-stopped
 
