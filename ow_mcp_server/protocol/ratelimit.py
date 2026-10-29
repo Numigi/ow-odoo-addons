@@ -9,6 +9,8 @@ Caveats:
     N * limit_per_minute. For single-worker dev this is the exact limit.
   - No cross-restart persistence (intentional — restart clears counters).
 """
+from __future__ import annotations
+
 import threading
 import time
 from collections import defaultdict, deque

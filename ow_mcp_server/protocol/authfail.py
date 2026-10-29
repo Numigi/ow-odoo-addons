@@ -9,6 +9,8 @@ gets at most N * THRESHOLD attempts before the first worker blocks. Good
 enough for IP-level spam; combine with fail2ban on the reverse proxy for
 real isolation.
 """
+from __future__ import annotations
+
 import threading
 import time
 from collections import defaultdict, deque
