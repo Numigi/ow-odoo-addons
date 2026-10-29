@@ -65,7 +65,7 @@ class OauthRegistration(http.Controller):
     @http.route(
         '/ow_mcp/oauth/register',
         type='http', auth='none', methods=['POST', 'OPTIONS'],
-        csrf=False, save_session=False, readonly=False,
+        csrf=False, save_session=False,
     )
     def register(self, **_kw):
         if request.httprequest.method == 'OPTIONS':

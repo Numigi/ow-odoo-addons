@@ -66,7 +66,7 @@ class MCPController(http.Controller):
 
     @http.route(
         '/mcp', type='http', auth='none', methods=['POST'],
-        csrf=False, save_session=False, readonly=False,
+        csrf=False, save_session=False,
     )
     def mcp_post(self, **kwargs):
         t0 = time.monotonic()
@@ -197,7 +197,7 @@ class MCPController(http.Controller):
 
     @http.route(
         '/mcp', type='http', auth='none', methods=['GET'],
-        csrf=False, save_session=False, readonly=False,
+        csrf=False, save_session=False,
     )
     def mcp_sse(self, **kwargs):
         cfg = self._cfg()
@@ -225,7 +225,7 @@ class MCPController(http.Controller):
 
     @http.route(
         '/mcp', type='http', auth='none', methods=['OPTIONS'],
-        csrf=False, save_session=False, readonly=False,
+        csrf=False, save_session=False,
     )
     def mcp_options(self, **kwargs):
         cfg = self._cfg()

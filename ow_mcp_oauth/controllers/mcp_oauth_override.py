@@ -38,21 +38,21 @@ class MCPControllerOAuth(MCPController):
     # ------------------------------------------------------------------
     @http.route(
         '/mcp', type='http', auth='none', methods=['POST'],
-        csrf=False, save_session=False, readonly=False,
+        csrf=False, save_session=False,
     )
     def mcp_post(self, **kwargs):
         return super().mcp_post(**kwargs)
 
     @http.route(
         '/mcp', type='http', auth='none', methods=['GET'],
-        csrf=False, save_session=False, readonly=False,
+        csrf=False, save_session=False,
     )
     def mcp_sse(self, **kwargs):
         return super().mcp_sse(**kwargs)
 
     @http.route(
         '/mcp', type='http', auth='none', methods=['OPTIONS'],
-        csrf=False, save_session=False, readonly=False,
+        csrf=False, save_session=False,
     )
     def mcp_options(self, **kwargs):
         return super().mcp_options(**kwargs)

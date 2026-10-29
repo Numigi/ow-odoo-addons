@@ -62,7 +62,7 @@ class OauthToken(http.Controller):
     @http.route(
         '/ow_mcp/oauth/token',
         type='http', auth='none', methods=['POST', 'OPTIONS'],
-        csrf=False, save_session=False, readonly=False,
+        csrf=False, save_session=False,
     )
     def token(self, **kwargs):
         if request.httprequest.method == 'OPTIONS':
@@ -339,7 +339,7 @@ class OauthToken(http.Controller):
     @http.route(
         '/ow_mcp/oauth/revoke',
         type='http', auth='none', methods=['POST', 'OPTIONS'],
-        csrf=False, save_session=False, readonly=False,
+        csrf=False, save_session=False,
     )
     def revoke(self, **kwargs):
         if request.httprequest.method == 'OPTIONS':

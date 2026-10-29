@@ -64,7 +64,7 @@ class OauthAuthorize(http.Controller):
     @http.route(
         '/ow_mcp/oauth/authorize',
         type='http', auth='user', methods=['GET'],
-        csrf=False, save_session=True, website=False, readonly=False,
+        csrf=False, save_session=True, website=False,
     )
     def authorize_get(self, **kwargs):
         return _no_frame(self._authorize_get(**kwargs))
@@ -186,7 +186,7 @@ class OauthAuthorize(http.Controller):
     @http.route(
         '/ow_mcp/oauth/authorize',
         type='http', auth='user', methods=['POST'],
-        csrf=True, save_session=True, website=False, readonly=False,
+        csrf=True, save_session=True, website=False,
     )
     def authorize_post(self, **kwargs):
         return _no_frame(self._authorize_post(**kwargs))
