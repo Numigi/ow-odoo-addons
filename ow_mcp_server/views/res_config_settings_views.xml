@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="res_config_settings_view_form" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.ow_mcp_server</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[hasclass('settings')]" position="inside">
+                <div class="app_settings_block" data-string="MCP Server" string="MCP Server" data-key="ow_mcp_server"
+                     groups="ow_mcp_server.group_mcp_admin">
+
+                    <h2>Transports</h2>
+                    <div class="row mt16 o_settings_container" name="ow_mcp_transport">
+                        <div class="col-12 col-lg-6 o_setting_box" id="ow_mcp_enable_http_transport">
+                            <div class="o_setting_left_pane">
+                                <field name="ow_mcp_enable_http_transport"/>
+                            </div>
+                            <div class="o_setting_right_pane">
+                                <label for="ow_mcp_enable_http_transport"/>
+                                <div class="text-muted">
+                                    Expose POST /mcp for stateless MCP over HTTP. When off the endpoint returns 503.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6 o_setting_box" id="ow_mcp_enable_sse">
+                            <div class="o_setting_left_pane">
+                                <field name="ow_mcp_enable_sse"/>
+                            </div>
+                            <div class="o_setting_right_pane">
+                                <label for="ow_mcp_enable_sse"/>
+                                <div class="text-muted">
+                                    Enable the SSE ready probe on GET /mcp.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6 o_setting_box" id="ow_mcp_require_https">
+                            <div class="o_setting_left_pane">
+                                <field name="ow_mcp_require_https"/>
+                            </div>
+                            <div class="o_setting_right_pane">
+                                <label for="ow_mcp_require_https"/>
+                                <div class="text-muted">
+                                    Reject non-HTTPS requests. Trusts X-Forwarded-Proto only when proxy_mode is set in odoo.conf.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6 o_setting_box" id="ow_mcp_max_body_bytes">
+                            <div class="o_setting_left_pane">
+                                <field name="ow_mcp_max_body_bytes"/>
+                            </div>
+                            <div class="o_setting_right_pane">
+                                <label for="ow_mcp_max_body_bytes"/>
+                                <div class="text-muted">
+                                    Hard limit on incoming JSON-RPC payload size. Default 1,048,576 (1 MiB). 0 disables the limit.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h2>YOLO Mode</h2>
+                    <div class="row mt16 o_settings_container" name="ow_mcp_yolo">
+                        <div class="col-12 col-lg-6 o_setting_box" id="ow_mcp_yolo_mode">
+                            <div class="o_setting_left_pane">
+                                <field name="ow_mcp_yolo_mode"/>
+                            </div>
+                            <div class="o_setting_right_pane">
+                                <label for="ow_mcp_yolo_mode"/>
+                                <div class="text-muted">
+                                    Dev-only override that bypasses the per-model access layer. Requires --dev or --test-enable AND OW_MCP_ALLOW_YOLO=1 to take effect.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h2>Limits and Formatting</h2>
+                    <div class="row mt16 o_settings_container" name="ow_mcp_limits">
+                        <div class="col-12 col-lg-6 o_setting_box" id="ow_mcp_default_limit">
+                            <div class="o_setting_left_pane">
+                                <field name="ow_mcp_default_limit"/>
+                            </div>
+                            <div class="o_setting_right_pane">
+                                <label for="ow_mcp_default_limit"/>
+                                <div class="text-muted">
+                                    Page size used when the caller omits `limit`.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6 o_setting_box" id="ow_mcp_max_limit">
+                            <div class="o_setting_left_pane">
+                                <field name="ow_mcp_max_limit"/>
+                            </div>
+                            <div class="o_setting_right_pane">
+                                <label for="ow_mcp_max_limit"/>
+                                <div class="text-muted">
+                                    Hard cap on `limit` accepted from the caller.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6 o_setting_box" id="ow_mcp_max_text_len">
+                            <div class="o_setting_left_pane">
+                                <field name="ow_mcp_max_text_len"/>
+                            </div>
+                            <div class="o_setting_right_pane">
+                                <label for="ow_mcp_max_text_len"/>
+                                <div class="text-muted">
+                                    Text / HTML fields are truncated to this many chars in MCP responses.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6 o_setting_box" id="ow_mcp_max_relational_preview">
+                            <div class="o_setting_left_pane">
+                                <field name="ow_mcp_max_relational_preview"/>
+                            </div>
+                            <div class="o_setting_right_pane">
+                                <label for="ow_mcp_max_relational_preview"/>
+                                <div class="text-muted">
+                                    Entries previewed for one2many / many2many fields.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h2>Rate Limit and Cache</h2>
+                    <div class="row mt16 o_settings_container" name="ow_mcp_perf">
+                        <div class="col-12 col-lg-6 o_setting_box" id="ow_mcp_rate_limit_per_minute">
+                            <div class="o_setting_left_pane">
+                                <field name="ow_mcp_rate_limit_per_minute"/>
+                            </div>
+                            <div class="o_setting_right_pane">
+                                <label for="ow_mcp_rate_limit_per_minute"/>
+                                <div class="text-muted">
+                                    Per-API-key sliding window. In-memory per worker; 0 disables the limiter.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6 o_setting_box" id="ow_mcp_cache_enabled">
+                            <div class="o_setting_left_pane">
+                                <field name="ow_mcp_cache_enabled"/>
+                            </div>
+                            <div class="o_setting_right_pane">
+                                <label for="ow_mcp_cache_enabled"/>
+                                <div class="text-muted">
+                                    Cache list_models / search_records / get_record per worker. Invalidated per-model on MCP writes.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6 o_setting_box" id="ow_mcp_cache_ttl_seconds">
+                            <div class="o_setting_left_pane">
+                                <field name="ow_mcp_cache_ttl_seconds"/>
+                            </div>
+                            <div class="o_setting_right_pane">
+                                <label for="ow_mcp_cache_ttl_seconds"/>
+                                <div class="text-muted">
+                                    Lifetime of a cached entry. Ignored when the response cache is disabled.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h2>CORS</h2>
+                    <div class="row mt16 o_settings_container" name="ow_mcp_cors">
+                        <div class="col-12 col-lg-6 o_setting_box" id="ow_mcp_enable_cors">
+                            <div class="o_setting_left_pane">
+                                <field name="ow_mcp_enable_cors"/>
+                            </div>
+                            <div class="o_setting_right_pane">
+                                <label for="ow_mcp_enable_cors"/>
+                                <div class="text-muted">
+                                    Emit CORS headers and handle OPTIONS preflight.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6 o_setting_box" id="ow_mcp_cors_origins">
+                            <div class="o_setting_left_pane">
+                                <field name="ow_mcp_cors_origins"
+                                       placeholder="https://chat.example.com&#10;https://cursor.sh"/>
+                            </div>
+                            <div class="o_setting_right_pane">
+                                <label for="ow_mcp_cors_origins"/>
+                                <div class="text-muted">
+                                    One origin per line for exact match. Empty list falls back to wildcard (*).
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h2>Audit Log</h2>
+                    <div class="row mt16 o_settings_container" name="ow_mcp_audit">
+                        <div class="col-12 col-lg-6 o_setting_box" id="ow_mcp_audit_log">
+                            <div class="o_setting_left_pane">
+                                <field name="ow_mcp_audit_log"/>
+                            </div>
+                            <div class="o_setting_right_pane">
+                                <label for="ow_mcp_audit_log"/>
+                                <div class="text-muted">
+                                    Record every MCP call in ow.mcp.audit.log (admin-only).
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6 o_setting_box" id="ow_mcp_audit_retention_days">
+                            <div class="o_setting_left_pane">
+                                <field name="ow_mcp_audit_retention_days"/>
+                            </div>
+                            <div class="o_setting_right_pane">
+                                <label for="ow_mcp_audit_retention_days"/>
+                                <div class="text-muted">
+                                    Daily cron deletes rows older than this. 0 disables retention (rows kept forever).
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h2>IP Whitelist</h2>
+                    <div class="row mt16 o_settings_container" name="ow_mcp_ip_whitelist">
+                        <div class="col-12 col-lg-6 o_setting_box" id="ow_mcp_ip_whitelist">
+                            <div class="o_setting_left_pane">
+                                <field name="ow_mcp_ip_whitelist"
+                                       placeholder="10.0.0.0/8&#10;192.168.1.42&#10;2001:db8::/32&#10;::1&#10;fe80::/10"/>
+                            </div>
+                            <div class="o_setting_right_pane">
+                                <label for="ow_mcp_ip_whitelist"/>
+                                <div class="text-muted">
+                                    One IPv4/IPv6 address or CIDR per line (# and blank lines ignored). IPv4-mapped IPv6 (::ffff:1.2.3.4) matches the IPv4 entry. Empty = no restriction.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Action that opens Settings scrolled to the MCP Server app. -->
+    <record id="action_open_mcp_settings" model="ir.actions.act_window">
+        <field name="name">MCP Server Settings</field>
+        <field name="res_model">res.config.settings</field>
+        <field name="view_mode">form</field>
+        <field name="target">inline</field>
+        <field name="context">{'module': 'ow_mcp_server'}</field>
+    </record>
+
+</odoo>

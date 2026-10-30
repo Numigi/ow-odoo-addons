@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="res_config_settings_view_form_oauth" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.ow_mcp_oauth</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="ow_mcp_server.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[hasclass('app_settings_block') and @data-key='ow_mcp_server']" position="inside">
+
+                <h2>OAuth 2.1</h2>
+                <div class="row mt16 o_settings_container" name="ow_mcp_oauth">
+                    <div class="col-12 col-lg-6 o_setting_box" id="ow_mcp_oauth_enabled">
+                        <div class="o_setting_left_pane">
+                            <field name="ow_mcp_oauth_enabled"/>
+                        </div>
+                        <div class="o_setting_right_pane">
+                            <label for="ow_mcp_oauth_enabled"/>
+                            <div class="text-muted">
+                                When on, /mcp accepts both OAuth bearer tokens and API keys, and the discovery endpoints are served. When off, /mcp only accepts API keys.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-6 o_setting_box" id="ow_mcp_oauth_dcr_enabled">
+                        <div class="o_setting_left_pane">
+                            <field name="ow_mcp_oauth_dcr_enabled"/>
+                        </div>
+                        <div class="o_setting_right_pane">
+                            <label for="ow_mcp_oauth_dcr_enabled"/>
+                            <div class="text-muted">
+                                When on, any client may POST to /ow_mcp/oauth/register (rate-limited per IP, redirect hosts restricted). Off by default: admins register clients manually.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-6 o_setting_box" id="ow_mcp_oauth_dcr_allowed_redirect_hosts"
+                         attrs="{'invisible': [('ow_mcp_oauth_dcr_enabled', '=', False)]}">
+                        <div class="o_setting_left_pane">
+                            <field name="ow_mcp_oauth_dcr_allowed_redirect_hosts"/>
+                        </div>
+                        <div class="o_setting_right_pane">
+                            <label for="ow_mcp_oauth_dcr_allowed_redirect_hosts"/>
+                            <div class="text-muted">
+                                Hosts (one per line, exact match) that dynamically registered clients may redirect to. Default: claude.ai, claude.com and loopback.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-6 o_setting_box" id="ow_mcp_oauth_canonical_resource_uri">
+                        <div class="o_setting_left_pane">
+                            <field name="ow_mcp_oauth_canonical_resource_uri"
+                                   placeholder="https://odoo.example.com/mcp"/>
+                        </div>
+                        <div class="o_setting_right_pane">
+                            <label for="ow_mcp_oauth_canonical_resource_uri"/>
+                            <div class="text-muted">
+                                The audience embedded in issued tokens (RFC 8707). Defaults to &lt;web.base.url&gt;/mcp. Override only if the MCP server is reverse-proxied at a different URL.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <h2>OAuth Lifetimes</h2>
+                <div class="row mt16 o_settings_container" name="ow_mcp_oauth_ttls">
+                    <div class="col-12 col-lg-6 o_setting_box" id="ow_mcp_oauth_access_token_ttl_seconds">
+                        <div class="o_setting_left_pane">
+                            <field name="ow_mcp_oauth_access_token_ttl_seconds"/>
+                        </div>
+                        <div class="o_setting_right_pane">
+                            <label for="ow_mcp_oauth_access_token_ttl_seconds"/>
+                            <div class="text-muted">
+                                Default 900 (15 min).
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-6 o_setting_box" id="ow_mcp_oauth_refresh_token_ttl_seconds">
+                        <div class="o_setting_left_pane">
+                            <field name="ow_mcp_oauth_refresh_token_ttl_seconds"/>
+                        </div>
+                        <div class="o_setting_right_pane">
+                            <label for="ow_mcp_oauth_refresh_token_ttl_seconds"/>
+                            <div class="text-muted">
+                                Sliding lifetime of each refresh token. Default 604,800 (7 days).
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-6 o_setting_box" id="ow_mcp_oauth_refresh_token_absolute_ttl_seconds">
+                        <div class="o_setting_left_pane">
+                            <field name="ow_mcp_oauth_refresh_token_absolute_ttl_seconds"/>
+                        </div>
+                        <div class="o_setting_right_pane">
+                            <label for="ow_mcp_oauth_refresh_token_absolute_ttl_seconds"/>
+                            <div class="text-muted">
+                                Maximum lifetime of a rotation chain since the user consented; then the user must authorize again. Default 2,592,000 (30 days). 0 = no cap.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-6 o_setting_box" id="ow_mcp_oauth_auth_code_ttl_seconds">
+                        <div class="o_setting_left_pane">
+                            <field name="ow_mcp_oauth_auth_code_ttl_seconds"/>
+                        </div>
+                        <div class="o_setting_right_pane">
+                            <label for="ow_mcp_oauth_auth_code_ttl_seconds"/>
+                            <div class="text-muted">
+                                Default 60 seconds.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-6 o_setting_box" id="ow_mcp_oauth_consent_remember_days">
+                        <div class="o_setting_left_pane">
+                            <field name="ow_mcp_oauth_consent_remember_days"/>
+                        </div>
+                        <div class="o_setting_right_pane">
+                            <label for="ow_mcp_oauth_consent_remember_days"/>
+                            <div class="text-muted">
+                                0 disables consent caching.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-6 o_setting_box" id="ow_mcp_oauth_unused_client_purge_days">
+                        <div class="o_setting_left_pane">
+                            <field name="ow_mcp_oauth_unused_client_purge_days"/>
+                        </div>
+                        <div class="o_setting_right_pane">
+                            <label for="ow_mcp_oauth_unused_client_purge_days"/>
+                            <div class="text-muted">
+                                Auto-delete dynamically-registered clients that have never been used. 0 disables.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-6 o_setting_box" id="ow_mcp_oauth_dcr_rate_limit_per_ip_per_hour">
+                        <div class="o_setting_left_pane">
+                            <field name="ow_mcp_oauth_dcr_rate_limit_per_ip_per_hour"/>
+                        </div>
+                        <div class="o_setting_right_pane">
+                            <label for="ow_mcp_oauth_dcr_rate_limit_per_ip_per_hour"/>
+                            <div class="text-muted">
+                                Per-worker; 0 disables the limit.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <h2>OAuth Signing Keys</h2>
+                <div class="row mt16 o_settings_container" name="ow_mcp_oauth_keys">
+                    <div class="col-12 col-lg-6 o_setting_box" id="ow_mcp_oauth_active_kid">
+                        <div class="o_setting_left_pane">
+                            <field name="ow_mcp_oauth_active_kid" readonly="1"/>
+                        </div>
+                        <div class="o_setting_right_pane">
+                            <label for="ow_mcp_oauth_active_kid"/>
+                            <div class="text-muted">
+                                The current `kid` advertised on /ow_mcp/oauth/jwks.json and used to sign new access tokens.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-6 o_setting_box" id="ow_mcp_oauth_previous_kid">
+                        <div class="o_setting_left_pane">
+                            <field name="ow_mcp_oauth_previous_kid" readonly="1"/>
+                        </div>
+                        <div class="o_setting_right_pane">
+                            <label for="ow_mcp_oauth_previous_kid"/>
+                            <div class="text-muted">
+                                Kept after rotation so already-issued tokens stay valid until they expire naturally.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-6 o_setting_box">
+                        <div class="o_setting_left_pane">
+                        </div>
+                        <div class="o_setting_right_pane">
+                            <label string="Rotate signing key"/>
+                            <div class="text-muted">
+                                Generates a new RSA keypair, demotes the current public key to `previous`. New tokens use the new kid; existing tokens keep verifying until their natural expiry.
+                            </div>
+                            <div class="mt16">
+                                <button name="action_ow_mcp_oauth_rotate_key"
+                                        type="object" string="Rotate now"
+                                        class="btn-primary"
+                                        confirm="Rotate the OAuth signing key? Existing tokens stay valid until they expire."/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
