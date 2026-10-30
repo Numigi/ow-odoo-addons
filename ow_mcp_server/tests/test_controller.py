@@ -1,6 +1,5 @@
 import base64
 import json
-from datetime import datetime, timedelta
 
 from odoo.tests import HttpCase, tagged
 

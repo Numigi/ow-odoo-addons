@@ -2,7 +2,6 @@
 (scope=mcp) keeps authenticating /mcp calls — backward compatibility.
 """
 import json
-from datetime import datetime, timedelta
 
 from odoo.tests import HttpCase, tagged
 

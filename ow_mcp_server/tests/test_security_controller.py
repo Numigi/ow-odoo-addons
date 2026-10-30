@@ -2,7 +2,6 @@
 IP whitelist, rate limiting, CORS, transport/SSE toggles, audit log.
 """
 import json
-from datetime import datetime, timedelta
 
 from odoo.tests import HttpCase, tagged
 

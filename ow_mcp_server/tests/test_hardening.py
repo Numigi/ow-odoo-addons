@@ -2,7 +2,6 @@
 max body size, require_https, auth-failure throttle.
 """
 import json
-from datetime import datetime, timedelta
 
 from odoo.tests import HttpCase, tagged
 from odoo.tests.common import TransactionCase

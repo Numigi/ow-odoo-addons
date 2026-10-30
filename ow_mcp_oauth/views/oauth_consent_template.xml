@@ -40,7 +40,7 @@
                     </p>
                     <p>
                         The authorization will be sent to
-                        <h5><strong><t t-esc="redirect_host"/></strong></h5>
+                        <strong class="h5"><t t-esc="redirect_host"/></strong>
                     </p>
                     <p class="meta">
                         Logged in as

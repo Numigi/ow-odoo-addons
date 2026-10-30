@@ -3,7 +3,6 @@ echoed back. Empty list keeps the legacy wildcard behaviour (backward
 compatible with existing deployments).
 """
 import json
-from datetime import datetime, timedelta
 
 from odoo.tests import HttpCase, tagged
 
