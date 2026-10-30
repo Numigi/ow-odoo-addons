@@ -7,7 +7,7 @@
             <meta name="viewport" content="width=device-width, initial-scale=1"/>
             <title>Authorize MCP access</title>
             <link rel="stylesheet" type="text/css"
-                  href="/web/static/lib/bootstrap/dist/css/bootstrap.css"/>
+                  href="/web/static/lib/bootstrap/css/bootstrap.css"/>
             <style>
                 body { background: #f8f9fa; padding-top: 4rem; }
                 .card { max-width: 520px; margin: 0 auto; }
@@ -40,7 +40,7 @@
                     </p>
                     <p>
                         The authorization will be sent to
-                        <strong class="fs-5"><t t-esc="redirect_host"/></strong>
+                        <h5><strong><t t-esc="redirect_host"/></strong></h5>
                     </p>
                     <p class="meta">
                         Logged in as
@@ -99,9 +99,9 @@
                             </label>
                         </div>
 
-                        <div class="d-flex gap-2">
+                        <div class="d-flex">
                             <button type="submit" name="decision" value="allow"
-                                    class="btn btn-primary flex-grow-1">
+                                    class="btn btn-primary flex-grow-1 mr-2">
                                 Allow
                             </button>
                             <button type="submit" name="decision" value="deny"

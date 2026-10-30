@@ -28,7 +28,7 @@ class TestBatchAudit(HttpCase):
             ],
         })
         self.key = self.env['res.users.apikeys'].with_user(user)._generate(
-            'mcp', 'test', datetime.now() + timedelta(days=1),
+            'mcp', 'test',
         )
         partner = self.env.ref('base.model_res_partner').id
         self.env['ow.mcp.model.access'].sudo().search(

@@ -27,7 +27,7 @@ class TestSpoofedForwardedFor(HttpCase):
             ],
         })
         self.key = self.env['res.users.apikeys'].with_user(user)._generate(
-            'mcp', 'ip', datetime.now() + timedelta(days=1),
+            'mcp', 'ip',
         )
         # Behave as in production (proxy_mode = True in odoo.conf).
         patcher = patch.object(ctrl, 'odoo_config', {'proxy_mode': True})

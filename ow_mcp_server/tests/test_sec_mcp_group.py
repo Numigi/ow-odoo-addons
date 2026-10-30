@@ -33,7 +33,7 @@ class TestMcpUserGroupRequired(HttpCase):
             'groups_id': [(6, 0, groups.ids)],
         })
         key = self.env['res.users.apikeys'].with_user(user).sudo()._generate(
-            None, 'k', datetime.now() + timedelta(days=1),
+            None, 'k',
         )
         return user, key
 
