@@ -39,7 +39,7 @@ class TestCorsOrigins(HttpCase):
             self.env['res.users.apikeys'].with_user(self.user)
             ._generate('mcp', 'cors')
         )
-        self.env.flush_all()
+        self.env["base"].flush()
 
     def _post(self, body, origin=None):
         h = {'Content-Type': 'application/json',
@@ -52,7 +52,7 @@ class TestCorsOrigins(HttpCase):
 
     def test_empty_allowlist_falls_back_to_wildcard(self):
         self.cfg.cors_origins = False
-        self.env.flush_all()
+        self.env["base"].flush()
         r = self._post(
             {'jsonrpc': '2.0', 'id': 1, 'method': 'ping'},
             origin='https://example.org',
@@ -61,7 +61,7 @@ class TestCorsOrigins(HttpCase):
 
     def test_allowlisted_origin_is_echoed(self):
         self.cfg.cors_origins = 'https://chat.example.com\nhttps://cursor.sh'
-        self.env.flush_all()
+        self.env["base"].flush()
         r = self._post(
             {'jsonrpc': '2.0', 'id': 1, 'method': 'ping'},
             origin='https://chat.example.com',
@@ -76,7 +76,7 @@ class TestCorsOrigins(HttpCase):
 
     def test_non_allowlisted_origin_gets_no_allow_origin(self):
         self.cfg.cors_origins = 'https://chat.example.com'
-        self.env.flush_all()
+        self.env["base"].flush()
         r = self._post(
             {'jsonrpc': '2.0', 'id': 1, 'method': 'ping'},
             origin='https://attacker.example',
@@ -85,7 +85,7 @@ class TestCorsOrigins(HttpCase):
 
     def test_missing_origin_with_allowlist_set(self):
         self.cfg.cors_origins = 'https://chat.example.com'
-        self.env.flush_all()
+        self.env["base"].flush()
         r = self._post({'jsonrpc': '2.0', 'id': 1, 'method': 'ping'})
         self.assertNotIn('Access-Control-Allow-Origin', r.headers)
 
@@ -95,7 +95,7 @@ class TestCorsOrigins(HttpCase):
             '\n'
             'https://chat.example.com\n'
         )
-        self.env.flush_all()
+        self.env["base"].flush()
         r = self._post(
             {'jsonrpc': '2.0', 'id': 1, 'method': 'ping'},
             origin='https://chat.example.com',

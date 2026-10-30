@@ -92,8 +92,9 @@ class OauthRefreshToken(models.Model):
         )
         # Raw UPDATE bypasses the ORM cache; drop stale `revoked` so any
         # reads that follow within the same transaction see the new value.
-        self.invalidate_recordset(['revoked'])
-        self.env['ow.mcp.oauth.access_token'].invalidate_model(['revoked'])
+        # Odoo 14: invalidate_cache(fields, ids) instead of invalidate_recordset
+        self.invalidate_cache(['revoked'], self.ids)
+        self.env['ow.mcp.oauth.access_token'].invalidate_cache(['revoked'])
         return True
 
     @api.model
@@ -109,6 +110,7 @@ class OauthRefreshToken(models.Model):
                 f' WHERE user_id = ANY(%s) AND revoked = FALSE',
                 (list(user_ids),),
             )
-        self.invalidate_model(['revoked'])
-        self.env['ow.mcp.oauth.access_token'].invalidate_model(['revoked'])
+        # Odoo 14: invalidate_cache instead of invalidate_model
+        self.invalidate_cache(['revoked'])
+        self.env['ow.mcp.oauth.access_token'].invalidate_cache(['revoked'])
         return True

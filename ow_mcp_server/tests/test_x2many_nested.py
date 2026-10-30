@@ -115,5 +115,5 @@ class TestNestedWritesViaTools(TransactionCase):
             'id': self.partner.id,
             'values': {'category_id': [(6, 0, [tag.id])]},
         })
-        self.partner.invalidate_recordset(['category_id'])
+        self.partner.invalidate_cache(['category_id'])
         self.assertIn(tag, self.partner.category_id)

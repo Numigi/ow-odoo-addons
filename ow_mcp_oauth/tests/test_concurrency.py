@@ -112,7 +112,7 @@ class TestAtomicRefreshRotation(HttpCase):
         second = self.env.cr.fetchall()
         self.assertEqual(len(first), 1)
         self.assertEqual(len(second), 0)
-        rec.invalidate_recordset(['consumed_at'])
+        rec.invalidate_cache(['consumed_at'])
         self.assertTrue(rec.consumed_at)
 
     def test_revoke_chain_walks_full_graph(self):
@@ -128,7 +128,7 @@ class TestAtomicRefreshRotation(HttpCase):
         # Revoke from a middle node — should still revoke all four.
         b.revoke_chain()
         for tok in (a, b, c, d):
-            tok.invalidate_recordset(['revoked'])
+            tok.invalidate_cache(['revoked'])
             self.assertTrue(
                 tok.revoked, f'token {tok.token_hash} not revoked',
             )

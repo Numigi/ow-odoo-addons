@@ -66,7 +66,7 @@ class TestBatchAudit(HttpCase):
 
     def test_batch_cannot_dodge_rate_limit(self):
         self.env['ow.mcp.config'].sudo().get_singleton().rate_limit_per_minute = 3
-        self.env.flush_all()
+        self.env["base"].flush()
         self.addCleanup(ratelimit.reset)
         r = self._batch(200)
         self.assertNotEqual(r.status_code, 200, r.text)

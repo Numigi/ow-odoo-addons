@@ -303,7 +303,7 @@ def _dispatch(env, message: dict):
                 'capabilities': {'tools': {}},
                 'serverInfo': {
                     'name': 'ow_mcp_server',
-                    'version': '18.0.1.0.0',
+                    'version': '14.0.1.0.0',
                 },
             })
         if method in ('initialized', 'notifications/initialized'):

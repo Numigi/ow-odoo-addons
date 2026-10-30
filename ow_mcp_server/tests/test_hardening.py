@@ -71,7 +71,7 @@ class TestHardeningController(HttpCase):
             self.env['res.users.apikeys'].with_user(self.user)
             ._generate('mcp', 'hard')
         )
-        self.env.flush_all()
+        self.env["base"].flush()
 
     def _post(self, body, headers=None, auth=True):
         h = {'Content-Type': 'application/json'}
@@ -87,7 +87,7 @@ class TestHardeningController(HttpCase):
 
     def test_body_over_limit_returns_413(self):
         self.cfg.max_body_bytes = 256
-        self.env.flush_all()
+        self.env["base"].flush()
         big = {'jsonrpc': '2.0', 'id': 1, 'method': 'ping',
                'params': {'x': 'a' * 1024}}
         r = self._post(big)
@@ -95,13 +95,13 @@ class TestHardeningController(HttpCase):
 
     def test_body_under_limit_passes(self):
         self.cfg.max_body_bytes = 1048576
-        self.env.flush_all()
+        self.env["base"].flush()
         r = self._post({'jsonrpc': '2.0', 'id': 1, 'method': 'ping'})
         self.assertEqual(r.status_code, 200)
 
     def test_body_limit_zero_disables_check(self):
         self.cfg.max_body_bytes = 0
-        self.env.flush_all()
+        self.env["base"].flush()
         body = {'jsonrpc': '2.0', 'id': 1, 'method': 'ping',
                 'params': {'x': 'a' * 10000}}
         r = self._post(body)
@@ -111,7 +111,7 @@ class TestHardeningController(HttpCase):
 
     def test_https_required_rejects_http(self):
         self.cfg.require_https = True
-        self.env.flush_all()
+        self.env["base"].flush()
         r = self._post({'jsonrpc': '2.0', 'id': 1, 'method': 'ping'})
         self.assertEqual(r.status_code, 400)
         body = json.loads(r.text)
@@ -119,7 +119,7 @@ class TestHardeningController(HttpCase):
 
     def test_https_off_by_default_allows_http(self):
         self.cfg.require_https = False
-        self.env.flush_all()
+        self.env["base"].flush()
         r = self._post({'jsonrpc': '2.0', 'id': 1, 'method': 'ping'})
         self.assertEqual(r.status_code, 200)
 

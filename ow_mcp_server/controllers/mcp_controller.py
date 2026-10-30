@@ -105,12 +105,14 @@ class MCPController(http.Controller):
                 error_code=jsonrpc.PERMISSION_DENIED,
                 error_message='user not allowed to use MCP',
             )
+        # Set uid: the setter automatically invalidates _env
         request.uid = uid
-        request._env = None  # Invalidate cached env - it will be recreated with new uid
+        # Get user context (lang, tz) and add no-cache flag if requested
+        user = request.env['res.users'].browse(uid)
+        ctx = dict(user.context_get())
         if _no_cache_requested(request):
-            # Set context with no-cache flag
-            request._context = dict(request.env.context, ow_mcp_no_cache=True)
-            request._env = None  # Invalidate again to pick up new context
+            ctx['ow_mcp_no_cache'] = True
+        request.context = ctx  # setter converts to frozendict and invalidates _env
 
         if cfg and cfg.rate_limit_per_minute and not ratelimit.check_and_record(
             uid, cfg.rate_limit_per_minute,

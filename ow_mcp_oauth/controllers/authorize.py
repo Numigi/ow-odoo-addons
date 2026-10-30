@@ -10,6 +10,8 @@ import re
 from datetime import datetime, timedelta
 from urllib.parse import urlencode, urlparse
 
+import werkzeug.utils
+
 from odoo import http
 from odoo.http import request
 
@@ -29,8 +31,9 @@ def _redirect_with_error(redirect_uri: str, error: str, state: str | None,
     if state:
         qs['state'] = state
     sep = '&' if '?' in redirect_uri else '?'
-    return request.redirect(
-        f'{redirect_uri}{sep}{urlencode(qs)}', code=302, local=False,
+    # Odoo 14: use werkzeug.utils.redirect instead of request.redirect
+    return werkzeug.utils.redirect(
+        f'{redirect_uri}{sep}{urlencode(qs)}', code=302,
     )
 
 
@@ -298,6 +301,7 @@ class OauthAuthorize(http.Controller):
         if state:
             qs['state'] = state
         sep = '&' if '?' in redirect_uri else '?'
-        return request.redirect(
-            f'{redirect_uri}{sep}{urlencode(qs)}', code=302, local=False,
+        # Odoo 14: use werkzeug.utils.redirect instead of request.redirect
+        return werkzeug.utils.redirect(
+            f'{redirect_uri}{sep}{urlencode(qs)}', code=302,
         )

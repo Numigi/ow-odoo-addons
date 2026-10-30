@@ -45,7 +45,7 @@ class TestSpoofedForwardedFor(HttpCase):
 
     def test_whitelist_not_bypassed_by_spoofed_xff(self):
         self.cfg.ip_whitelist = '203.0.113.7/32'
-        self.env.flush_all()
+        self.env["base"].flush()
         r = self._post(self.key, '203.0.113.7')
         self.assertEqual(r.status_code, 403, r.text)
 

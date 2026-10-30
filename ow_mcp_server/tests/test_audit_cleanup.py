@@ -23,7 +23,7 @@ class TestAuditCleanup(TransactionCase):
             'UPDATE ow_mcp_audit_log SET create_date = %s WHERE id = %s',
             (when, log.id),
         )
-        log.invalidate_recordset(['create_date'])
+        log.invalidate_cache(['create_date'])
         return log
 
     def test_deletes_rows_older_than_retention(self):

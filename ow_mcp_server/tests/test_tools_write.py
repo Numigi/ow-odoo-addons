@@ -86,7 +86,7 @@ class TestWriteTools(TransactionCase):
             'model': 'res.partner', 'id': self.p1.id,
             'values': {'name': 'AA'},
         })
-        self.p1.invalidate_recordset(['name'])
+        self.p1.invalidate_cache(['name'])
         self.assertEqual(self.p1.name, 'AA')
         self.assertEqual(out['updated'], [self.p1.id])
 

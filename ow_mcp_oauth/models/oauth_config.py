@@ -8,6 +8,7 @@ from urllib.parse import urlparse
 
 from odoo import api, fields, models
 from odoo.exceptions import UserError
+from odoo.modules.module import MODULE_UNINSTALL_FLAG
 
 from ..tools import jwt_helper
 
@@ -240,8 +241,8 @@ class OauthConfig(models.Model):
 
     def unlink(self):
         """Block deletion of the singleton row at ORM level (Odoo 14 compat)."""
-        # Allow deletion during module uninstall
-        if self.env.context.get('_force_unlink') or not self.env.context.get('active_test', True):
+        # Allow deletion only during module uninstall or with _force_unlink flag
+        if self.env.context.get('_force_unlink') or self.env.context.get(MODULE_UNINSTALL_FLAG):
             return super().unlink()
         raise UserError(
             'ow.mcp.oauth.config is a singleton and cannot be deleted. '

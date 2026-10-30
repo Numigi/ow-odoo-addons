@@ -24,7 +24,9 @@ mcp:read, mcp:write — gated per tool inside the MCP dispatcher. The existing
 User API Keys (scope: mcp) keep working unchanged; both authentication
 modes coexist.
 
-Requires: pip install 'pyjwt[crypto]'.
+Requirements:
+- Python 3.7+ (for `from __future__ import annotations`)
+- pip install 'PyJWT>=2.4.0' 'cryptography>=3.1' (RSA key generation without backend)
 """,
     'category': 'Technical',
     'license': 'LGPL-3',

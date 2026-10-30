@@ -256,8 +256,10 @@ def read_group(env, params):
     limit = acc.per_model_limit(env, model_name, cfg.max_limit)
     # lazy=False: group by every level at once and always return `__count`
     # (a lazy read_group names it `<groupby>_count`), as on 19.0.
+    # Odoo 14: empty fields list aggregates all numeric fields, bypassing
+    # allowed_fields. Use ['__count'] as fallback to match Odoo 18 behavior.
     rows = env[model_name].read_group(
-        domain, fields, groupby, limit=limit, lazy=False,
+        domain, fields or ['__count'], groupby, limit=limit, lazy=False,
     )
     groups = []
     for row in rows:

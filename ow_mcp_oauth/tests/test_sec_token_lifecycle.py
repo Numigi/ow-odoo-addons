@@ -77,7 +77,7 @@ class TestTokenLifecycle(HttpCase):
             [('client_id', '=', self.client.id)], limit=1)
         rt.chain_issued_at = int(time.time()) - (
             self.cfg.refresh_token_absolute_ttl_seconds + 60)
-        self.env.flush_all()
+        self.env["base"].flush()
         r = self._refresh(pair['refresh_token'])
         self.assertEqual(r.status_code, 400, r.text)
         self.assertEqual(r.json()['error'], 'invalid_grant')
@@ -94,19 +94,19 @@ class TestTokenLifecycle(HttpCase):
     def test_password_change_revokes_tokens(self):
         pair = self._pair()
         self.user.password = 'lifeuser-Pass-2'
-        self.env.flush_all()
+        self.env["base"].flush()
         self.assertEqual(self._ping(pair['access_token']), 401)
         self.assertEqual(self._refresh(pair['refresh_token']).status_code, 400)
 
     def test_deactivated_user_cannot_refresh(self):
         pair = self._pair()
         self.user.active = False
-        self.env.flush_all()
+        self.env["base"].flush()
         self.assertEqual(self._refresh(pair['refresh_token']).status_code, 400)
 
     def test_user_removed_from_mcp_group_cannot_refresh(self):
         pair = self._pair()
         self.user.groups_id = [
             (3, self.env.ref('ow_mcp_server.group_mcp_user').id)]
-        self.env.flush_all()
+        self.env["base"].flush()
         self.assertEqual(self._refresh(pair['refresh_token']).status_code, 400)

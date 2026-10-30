@@ -27,7 +27,7 @@ BLOCKLIST_RE = re.compile(
     r'|res\.users(\..*)?'
     r'|res\.groups(\..*)?'
     r'|auth[._].*'
-    r'|base_automation.*'
+    r'|base\.automation.*'  # Fixed: was base_automation.* which didn't match
     r'|base_import\..*'
     # Settings: creating a res.config.settings reads every config_parameter
     # (API keys of third-party integrations).
@@ -37,7 +37,10 @@ BLOCKLIST_RE = re.compile(
     r'|mail\.(mail|template.*|alias.*|ice\.server)'
     r'|google\..*|microsoft\..*|calendar\.provider\.config'
     # Payment / banking / certificates / IAP credentials.
-    r'|payment\.(provider|token)'
+    # Odoo 14: payment.acquirer (renamed to payment.provider in 15+)
+    r'|payment\.(acquirer|provider|token)'
+    # Online banking tokens (Enterprise)
+    r'|account\.online\.(link|account)'
     r'|online\.bank\.statement\.provider.*'
     r'|certificate\..*|l10n\.es\.aeat\.certificate.*'
     r'|iap\..*'
@@ -283,7 +286,8 @@ def _assert_model_exposed(env, model_name, dotted):
             f'Domain traversal reaches blocked model {model_name!r} '
             f'via {dotted!r}.'
         )
-    if not env['ow.mcp.model.access'].sudo().search_count(
+    # Odoo 14: search_count doesn't accept limit parameter, use search instead
+    if not env['ow.mcp.model.access'].sudo().search(
         [('model_name', '=', model_name)], limit=1,
     ):
         raise AccessError(

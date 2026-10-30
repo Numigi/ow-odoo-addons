@@ -3,6 +3,7 @@ import os
 from odoo import api, fields, models
 from odoo.exceptions import UserError, ValidationError
 from odoo.tools import config as odoo_config
+from odoo.modules.module import MODULE_UNINSTALL_FLAG
 
 
 class MCPConfig(models.Model):
@@ -165,9 +166,12 @@ class MCPConfig(models.Model):
 
         The form view already hides the Delete button, but this guard covers
         XML-RPC, `odoo shell`, and any code path that reaches `unlink()`
-        directly. `at_uninstall=False` lets the module uninstall cleanly —
+        directly. MODULE_UNINSTALL_FLAG lets the module uninstall cleanly —
         only interactive / programmatic deletes are refused.
         """
+        # Allow deletion only during module uninstall or with _force_unlink flag
+        if self.env.context.get('_force_unlink') or self.env.context.get(MODULE_UNINSTALL_FLAG):
+            return super().unlink()
         raise UserError(
             'ow.mcp.config is a singleton and cannot be deleted. '
             'Edit the existing record instead, or uninstall the module to '

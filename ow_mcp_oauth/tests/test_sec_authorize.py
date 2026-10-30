@@ -35,7 +35,7 @@ class TestAuthorizationServerHardening(HttpCase):
 
     def _register(self, redirect, name='Claude'):
         self.cfg.oauth_dcr_enabled = True
-        self.env.flush_all()
+        self.env["base"].flush()
         return self.url_open('/ow_mcp/oauth/register', data=json.dumps({
             'client_name': name, 'redirect_uris': [redirect],
             'token_endpoint_auth_method': 'none'}).encode(),
@@ -79,7 +79,7 @@ class TestAuthorizationServerHardening(HttpCase):
     def test_consent_page_hardened(self):
         # Set explicitly: an upgraded DB keeps its previous value (30).
         self.cfg.consent_remember_days = 0
-        self.env.flush_all()
+        self.env["base"].flush()
         r = self._authorize(self._client(), 'azuser')
         self.assertEqual(r.status_code, 200, r.text)
         self.assertEqual(r.headers.get('X-Frame-Options'), 'DENY')
@@ -91,7 +91,7 @@ class TestAuthorizationServerHardening(HttpCase):
         self.assertNotIn('name="remember"', r.text)
         # ... and when enabled it is never pre-checked.
         self.cfg.consent_remember_days = 30
-        self.env.flush_all()
+        self.env["base"].flush()
         r = self._authorize(self._client(), 'azuser')
         box = re.search(r'<input[^>]*name="remember"[^>]*>', r.text)
         self.assertTrue(box, r.text)
@@ -146,7 +146,7 @@ class TestAuthorizationServerHardening(HttpCase):
     # ---- body caps (m6) ----
     def test_register_and_token_bodies_capped(self):
         self.cfg.oauth_dcr_enabled = True
-        self.env.flush_all()
+        self.env["base"].flush()
         big = json.dumps({'redirect_uris': [REDIR], 'pad': 'x' * 70000})
         r = self.url_open('/ow_mcp/oauth/register', data=big.encode(),
                           headers={'Content-Type': 'application/json'})

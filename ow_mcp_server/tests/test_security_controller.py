@@ -47,10 +47,10 @@ class TestMcpSecurityController(HttpCase):
             'allow_read': True,
         })
         self.env['ow.mcp.audit.log'].sudo().search([]).unlink()
-        self.env.flush_all()
+        self.env["base"].flush()
 
     def _flush(self):
-        self.env.flush_all()
+        self.env["base"].flush()
 
     def _post(self, body, headers=None):
         h = {'Content-Type': 'application/json',
@@ -155,7 +155,7 @@ class TestMcpSecurityController(HttpCase):
         from odoo.tools import config
         config['proxy_mode'] = False
         self.cfg.ip_whitelist = '10.0.0.0/8'
-        self.cfg.invalidate_recordset(['proxy_mode_warning'])
+        self.cfg.invalidate_cache(['proxy_mode_warning'])
         self.assertIn('proxy_mode', self.cfg.proxy_mode_warning or '')
 
     def test_proxy_mode_warning_hidden_when_proxy_on(self):
@@ -163,14 +163,14 @@ class TestMcpSecurityController(HttpCase):
         config['proxy_mode'] = True
         try:
             self.cfg.ip_whitelist = '10.0.0.0/8'
-            self.cfg.invalidate_recordset(['proxy_mode_warning'])
+            self.cfg.invalidate_cache(['proxy_mode_warning'])
             self.assertFalse(self.cfg.proxy_mode_warning)
         finally:
             config['proxy_mode'] = False
 
     def test_proxy_mode_warning_hidden_when_no_whitelist(self):
         self.cfg.ip_whitelist = False
-        self.cfg.invalidate_recordset(['proxy_mode_warning'])
+        self.cfg.invalidate_cache(['proxy_mode_warning'])
         self.assertFalse(self.cfg.proxy_mode_warning)
 
     # ---- rate_limit_per_minute ----
@@ -233,7 +233,7 @@ class TestMcpSecurityController(HttpCase):
             'params': {'name': 'list_models', 'arguments': {}},
         })
         self.assertEqual(r.status_code, 200)
-        self.env['ow.mcp.audit.log'].invalidate_model()
+        self.env['ow.mcp.audit.log'].invalidate_cache()
         rows = self.env['ow.mcp.audit.log'].sudo().search([
             ('login', '=', 'mcpsec'),
         ])
@@ -253,7 +253,7 @@ class TestMcpSecurityController(HttpCase):
                        'arguments': {'model': 'ir.config_parameter'}},
         })
         self.assertEqual(r.status_code, 200)  # JSON-RPC error inside 200
-        self.env['ow.mcp.audit.log'].invalidate_model()
+        self.env['ow.mcp.audit.log'].invalidate_cache()
         rows = self.env['ow.mcp.audit.log'].sudo().search([
             ('login', '=', 'mcpsec'),
             ('success', '=', False),
