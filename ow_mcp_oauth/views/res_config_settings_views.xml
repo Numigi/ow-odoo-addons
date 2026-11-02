@@ -167,7 +167,7 @@
                         <div class="o_setting_left_pane">
                         </div>
                         <div class="o_setting_right_pane">
-                            <label string="Rotate signing key"/>
+                            <label string="Rotate signing key" class="o_form_label"/>
                             <div class="text-muted">
                                 Generates a new RSA keypair, demotes the current public key to `previous`. New tokens use the new kid; existing tokens keep verifying until their natural expiry.
                             </div>
