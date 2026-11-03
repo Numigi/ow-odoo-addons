@@ -1,4 +1,4 @@
-# OW MCP Server — native Odoo 18 MCP addon
+# OW MCP Server — native Odoo 14 MCP addon
 
 Serves the **Model Context Protocol** (MCP, JSON-RPC 2.0) directly from Odoo
 on `/mcp`. Claude Code, Cursor, Copilot, and Claude Desktop talk to Odoo
@@ -61,6 +61,11 @@ For each model you want to expose, create a row with:
 - CRUD flags (read/write/create/delete).
 - Optional `allowed_fields_json`, e.g. `["name", "email", "country_id"]` —
   restricts which fields clients may read or write. Leave empty for all.
+- Optional **Max Records** — per-model ceiling on the number of records returned.
+  When set to `0` (default), the global `max_limit` from settings applies (500).
+  When set to a positive value, the effective limit is the lowest of:
+  client-requested limit, this per-model ceiling, and the global `max_limit`.
+  Use this to protect large models or limit sensitive data exposure.
 - Optional Required Groups — further narrows who may use this model.
 
 Sensitive internal models are permanently blocked and can never be exposed,
@@ -73,6 +78,27 @@ all of `res.users.*` (including `apikeys`), `auth_*`, `base_automation*`,
 are not blocklisted (e.g. `mail.message`, `mail.followers`, `mail.template`)
 are still **not exposed by default** — they only become reachable if you
 add a row in *Model Access* for them.
+
+### Field filtering behavior
+
+When `allowed_fields_json` is set on a model, the MCP server enforces it differently
+depending on the operation:
+
+- **Read operations** (`search_records`, `get_record`): Fields not in the allow-list
+  are **silently filtered out** from the response. The client receives only the
+  allowed fields, without any error. This prevents accidental exposure of sensitive
+  data while keeping queries flexible.
+
+- **Write operations** (`create_record`, `update_record`, `delete_record`) and
+  **filtering operations** (domain filters in `search_records`, sorting, `read_group`):
+  Fields not in the allow-list are **rejected with an error**:
+  `-32002 Fields not allowed via MCP: ['field_name']`. This strict validation
+  prevents clients from bypassing access controls when modifying data or building
+  queries.
+
+This asymmetry ensures safety: reads are permissive (you only see what you're allowed
+to see), writes and filters are strict (you can't manipulate what you're not allowed
+to access).
 
 ## Client configuration
 
@@ -136,7 +162,7 @@ same effect.) The bridge sends three routing hints with every request:
 - `X-Odoo-Database: my_db` header — read by this addon's controller to
   verify the request landed on the expected database (otherwise HTTP 404).
 - `X-Odoo-Dbfilter: ^my_db$` header — honored by OCA's
-  [`dbfilter_from_header`](https://github.com/OCA/server-tools/tree/18.0/dbfilter_from_header)
+  [`dbfilter_from_header`](https://github.com/OCA/server-tools/tree/14.0/dbfilter_from_header)
   module to pick the target DB per request (regex, anchored exact match).
 
 **Recommended multi-db setup:** install `dbfilter_from_header` from OCA
@@ -231,7 +257,7 @@ MCP administrators additionally receive `groups` (full group names); other calle
 
 ### `list_modules` — installed modules (admin only)
 Input: `{}`
-Output: `{"modules": [{"name": "sale", "label": "Sales", "version": "18.0.1.0"}, …], "count": 42}`
+Output: `{"modules": [{"name": "sale", "label": "Sales", "version": "14.0.1.0"}, …], "count": 42}`
 Restricted to *MCP Administrator*; raises `AccessError` for ordinary MCP users.
 
 ### Multi-company switching
@@ -342,8 +368,8 @@ grid (the user must be in the *MCP Administrator* group).
 
 **`401 Authentication required` from `/mcp`.**
 - API key missing → add `Authorization: Bearer <key>` header.
-- Key scope is not `mcp` → re-create the key with Scope = `mcp`.
-- Key expired → Odoo 18 requires an expiration date; create a new one.
+- Key scope is not `mcp` → re-create the key with Scope = `mcp` (v14: scope selection not available in UI, keys created via Preferences work with scope=NULL).
+- Key expired → create a new one.
 
 **`-32002 Permission denied: Model 'xxx' is not exposed via MCP`.**
 The model has no row in *Model Access*, or the requested operation flag

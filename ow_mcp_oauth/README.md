@@ -49,7 +49,7 @@ Open *Settings → MCP Server* and scroll to the **OAuth 2.1** sections:
 Claude needs to reach the server over **HTTPS** with a real public hostname (Claude.ai will not accept `http://localhost`). Easiest path:
 
 ```bash
-docker compose -f /Users/mario/odoo/odoo18/docker-compose.yml up -d
+docker compose -f /path/to/odoo14/docker-compose.yml up -d
 ngrok http 8069   # gives e.g. https://abcd.ngrok-free.app
 ```
 
@@ -74,27 +74,27 @@ Claude will:
 
 ## Development with Docker Compose
 
-The standard layout assumed below is `/Users/mario/odoo/odoo18/docker-compose.yml` with `./addons:/mnt/extra-addons`:
+The standard layout assumed below is a docker-compose.yml with `./addons:/mnt/extra-addons`:
 
 ```bash
-cd /Users/mario/odoo/odoo18/addons
-ln -sf /Users/mario/project/odoo-addons/ow_mcp_server .
-ln -sf /Users/mario/project/odoo-addons/ow_mcp_oauth .
+cd /path/to/odoo14/addons
+ln -sf /path/to/odoo-addons/ow_mcp_server .
+ln -sf /path/to/odoo-addons/ow_mcp_oauth .
 
 # Install pyjwt inside the container
-docker compose -f /Users/mario/odoo/odoo18/docker-compose.yml exec -u root web \
+docker compose -f /path/to/odoo14/docker-compose.yml exec -u root web \
     pip install 'pyjwt[crypto]'
 
 # Install / upgrade the addons
-docker compose -f /Users/mario/odoo/odoo18/docker-compose.yml exec web \
+docker compose -f /path/to/odoo14/docker-compose.yml exec web \
     odoo -d odoo --stop-after-init -i ow_mcp_oauth --without-demo=all
-docker compose -f /Users/mario/odoo/odoo18/docker-compose.yml restart web
+docker compose -f /path/to/odoo14/docker-compose.yml restart web
 ```
 
 ## Tests
 
 ```bash
-docker compose -f /Users/mario/odoo/odoo18/docker-compose.yml exec web \
+docker compose -f /path/to/odoo14/docker-compose.yml exec web \
     odoo -d odoo_test --stop-after-init --test-enable \
         --test-tags ow_mcp_oauth -i ow_mcp_oauth --without-demo=all
 ```
