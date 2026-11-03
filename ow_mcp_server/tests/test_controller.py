@@ -72,6 +72,33 @@ class TestMcpController(HttpCase):
         )
         self.assertEqual(r.status_code, 401)
 
+    def test_null_scope_key_rejected(self):
+        """API keys with scope=NULL (created via v14 UI) must be rejected.
+
+        In Odoo 14, the Preferences → Security interface doesn't offer
+        scope selection, so keys are created with scope=NULL. The MCP
+        controller requires scope='mcp', so NULL-scope keys must fail auth.
+        """
+        # Create a key with empty/NULL scope by directly using sudo to bypass
+        # the _generate method which sets a scope.
+        null_scope_key = self.env['res.users.apikeys'].sudo().create({
+            'user_id': self.user.id,
+            'name': 'null_scope_test',
+            'scope': False,  # NULL scope
+        })
+        self.env['res.users.apikeys'].flush()
+
+        # Try to use this key for MCP access
+        r = self._post(
+            {'jsonrpc': '2.0', 'id': 1, 'method': 'initialize'},
+            f'Bearer {null_scope_key.key}',
+        )
+        # Should be rejected because scope is NULL, not 'mcp'
+        self.assertEqual(
+            r.status_code, 401,
+            'NULL-scope keys (created via v14 UI) must be rejected by MCP',
+        )
+
     def test_wrong_key_rejected(self):
         r = self._post(
             {'jsonrpc': '2.0', 'id': 1, 'method': 'initialize'},
